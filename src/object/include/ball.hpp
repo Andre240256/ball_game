@@ -2,6 +2,7 @@
 #include <Eigen/Dense>
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <chrono>
 
 #pragma once
 
@@ -13,8 +14,8 @@ public:
     void drawCircle();
 
     //physics properties
-    void updatePos();
-    void updateVel();
+    void updatePos(double dt);
+    void updateVel(double dt);
     void checkCollisionWithWalls(int width, int height);
     void checkCollisionWithBalls(std::vector<Circle>& balls);
 

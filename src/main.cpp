@@ -1,5 +1,6 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include <chrono>
 
 
 #include "include/ball.hpp"
@@ -32,19 +33,25 @@ int main()
     glMatrixMode(GL_MODELVIEW); 
     glLoadIdentity(); 
 
+    auto lastTime = std::chrono::high_resolution_clock::now();
+
     while(!glfwWindowShouldClose(display.getWindow()))
     {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsedtime = currentTime - lastTime;
+        double dt = elapsedtime.count();
+        lastTime = currentTime;
 
         
         glColor3f(1.0f, 1.0f, 1.0f); 
         for(auto& ball : vecBalls.balls)
         {
             ball.drawCircle();
-            ball.updateVel();
-            ball.updatePos(); // Assuming the correct method is updatePosition()
+            ball.updateVel(dt);
+            ball.updatePos(dt); // Assuming the correct method is updatePosition()
             ball.checkCollisionWithWalls(screenWidth, screenHeight);
             ball.checkCollisionWithBalls(vecBalls.balls);
         }

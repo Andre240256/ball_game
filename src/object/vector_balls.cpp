@@ -6,7 +6,6 @@
 
 #include "include/vector_balls.hpp"
 
-#pragma once
 
 //constructor
 Circles::Circles() {}
@@ -24,11 +23,11 @@ void Circles::addBallToMouse(Eigen::Vector2d posMouse)
     std::uniform_real_distribution<double> dis(10.0, 70.0);
     double radius = dis(gen);
 
-    std::uniform_real_distribution<double> disVel(-2.0, 2.0);
+    std::uniform_real_distribution<double> disVel(-50.0, 50.0);
     Eigen::Vector2d vel(disVel(gen), disVel(gen));
 
-    std::uniform_real_distribution<double> disAcc(-0.2, 0.2);
-    Eigen::Vector2d acc(disAcc(gen), -0.1);
+    std::uniform_real_distribution<double> disAcc(-20.0, 20.0);
+    Eigen::Vector2d acc(disAcc(gen), disAcc(gen));
 
     Circle newBall(radius, posMouse, vel, acc);
     newBall.drawCircle();

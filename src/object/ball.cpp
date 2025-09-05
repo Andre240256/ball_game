@@ -3,6 +3,7 @@
 #include <cmath>
 #include <GLFW/glfw3.h>
 #include <random>
+#include <chrono>
 
 
 
@@ -17,13 +18,13 @@ Circle::Circle(double radius, Eigen::Vector2d pos,Eigen::Vector2d vel, Eigen::Ve
 
 
 //physics properties
-void Circle::updatePos()
+void Circle::updatePos(double dt)
 {
-    pos += vel;
+    pos += vel * dt;
 }
-void Circle::updateVel()    
+void Circle::updateVel(double dt)
 {
-    vel += acc;
+    vel += acc * dt;
 }
 void Circle::checkCollisionWithWalls(int width, int height)
 {
