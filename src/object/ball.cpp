@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <GLFW/glfw3.h>
+#include <random>
 
 
 
@@ -9,13 +10,14 @@
 #define PI 3.14159265358979323846
 #endif
 
-#define cof 0.8 //coeficcient of colision
+#define cof 0.8 //coeficcient of restitution
 //constructor
 Circle::Circle(double radius, Eigen::Vector2d pos,Eigen::Vector2d vel, Eigen::Vector2d acc,int res)
-: radius(radius), pos(pos), vel(vel), acc(acc) , res(res){}
+: radius(radius), pos(pos), vel(vel), acc(acc) , res(res), mass(radius*radius) {}
+
 
 //physics properties
-void Circle::udpatePos()
+void Circle::updatePos()
 {
     pos += vel;
 }
@@ -47,6 +49,41 @@ void Circle::checkCollisionWithWalls(int width, int height)
         vel.y() = -cof*vel.y();
     }
 }
+void Circle::checkCollisionWithBalls(std::vector<Circle>& balls)
+{
+    for(int i = 0; i< balls.size(); i++)
+    {
+        for(int j = i + 1; j< balls.size(); j++)
+        {
+            if((balls[i].pos - balls[j].pos).norm() < balls[i].radius + balls[j].radius)
+            {
+                //collision equations
+                // balls[i].vel = (balls[i].vel * (balls[i].mass - cof * balls[j].mass) + (1 + cof)*balls[j].vel * balls[j].mass)/
+                // (balls[i].mass + balls[j].mass);
+                // balls[j].vel = (balls[i].vel * balls[i].mass * (1+cof) + balls[j].vel * (balls[j].mass - cof * balls[i].mass))/
+                // (balls[i].mass + balls[j].mass);
+                
+                Eigen::Vector2d normal = (balls[j].pos - balls[i].pos).normalized();
+                Eigen::Vector2d normalVelocity1 = balls[i].vel.dot(normal) * normal;
+                Eigen::Vector2d normalVelocity2 = balls[j].vel.dot(normal) * normal;
+
+                
+                balls[i].vel = balls[i].vel - normalVelocity1;
+                balls[j].vel = balls[j].vel - normalVelocity2;
+                
+                balls[i].vel += (normalVelocity1 * (balls[i].mass - cof * balls[j].mass) + normalVelocity2* balls[j].mass * (1 + cof))
+                / (balls[i].mass + balls[j].mass);
+                balls[j].vel += (normalVelocity1 * balls[i].mass * (1+cof) + normalVelocity2 * (balls[j].mass - cof * balls[i].mass))
+                / (balls[i].mass + balls[j].mass);
+
+                balls[i].pos = balls[j].pos - normal * (balls[i].radius + balls[j].radius) * 1.02;
+            }
+        }
+    }
+}
+
+
+
 
 //getters
 double Circle::getRadius() const { return radius; }
@@ -66,7 +103,7 @@ void Circle::setRes(int res) { this->res = res; }
 Circle::~Circle() {}
 
 //drawCircle
-void Circle::drawCircle(GLFWwindow* window)
+void Circle::drawCircle()
 {
     glColor3f(1.0f, 1.0f, 1.0f); 
     glBegin(GL_TRIANGLE_FAN);

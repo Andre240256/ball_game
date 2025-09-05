@@ -17,7 +17,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLFW REQUIRED glfw3)
 
 # Cria o nosso programa executável a partir do ficheiro main.cpp
-add_executable(exec main.cpp window/window.cpp object/ball.cpp)
+add_executable(exec main.cpp window/window.cpp object/ball.cpp object/vector_balls.cpp)
 
 target_include_directories(exec PRIVATE window)
 target_include_directories(exec PRIVATE object)

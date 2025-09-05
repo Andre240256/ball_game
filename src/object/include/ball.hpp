@@ -10,13 +10,16 @@
 class Circle{
 public:
     Circle(double radius, Eigen::Vector2d pos, Eigen::Vector2d vel = Eigen::Vector2d(0.0 , 0.0) , Eigen::Vector2d acc = Eigen::Vector2d(0.0 , 0.0), int res = 100);
-    void drawCircle(GLFWwindow* window);
+    void drawCircle();
 
     //physics properties
-    void udpatePos();
+    void updatePos();
     void updateVel();
     void checkCollisionWithWalls(int width, int height);
+    void checkCollisionWithBalls(std::vector<Circle>& balls);
 
+    //mouse interactions
+    void addCircleToMouse(Eigen::Vector2d posMouse, std::vector<Circle> &balls);
 
     //getters
     double getRadius() const;
@@ -36,8 +39,10 @@ public:
     ~Circle();
 private:
     double radius;
+    double mass;
     Eigen::Vector2d pos;
     Eigen::Vector2d vel;
     Eigen::Vector2d acc;
     int res;
+    std::vector<Circle> balls;
 };
